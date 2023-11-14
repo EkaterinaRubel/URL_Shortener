@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "url_shortener"
+version = "0.1.0"
+description = ""
+license = "Proprietary"
+authors = ["Ekaterina <katerina.rubelle@gmail.com>"]
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+python = "^3.10"
+wemake-python-styleguide = "0.18.0"
+pytest = "^7.4.1"
+pytest-cov = "^4.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

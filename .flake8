@@ -1,0 +1,6 @@
+[flake8]
+exclude = 
+    */__init__.py
+
+[darglint]
+docstring_style = google
