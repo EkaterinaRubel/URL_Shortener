@@ -1,0 +1,77 @@
+default:
+  image: python:3.10-slim
+
+.base_job:
+  before_script:
+    - apt-get update && apt-get install -y curl
+    - curl -sSL https://install.python-poetry.org | python3 -
+    - export PATH="/root/.local/bin:$PATH"
+    - export PYTHONPATH=$PYTHONPATH:$(pwd)/src
+    - poetry install
+    - source $(poetry env info --path)/bin/activate
+    - apt-get update -yq 
+
+stages:
+  - linting
+  - tests
+  - build
+  - deploy
+
+Linter:
+  stage: linting
+  extends: .base_job
+  script:
+  - flake8 src/
+  rules:
+  - changes:
+    - "src/**/*"
+
+Tests:
+  stage: tests
+  extends: .base_job
+  script:
+  -  pytest src/tests -v
+  rules:
+  - changes:
+      - "src/**/*"
+
+Build:
+  stage: build
+  image: docker:stable
+  services:
+    - docker:dind
+  before_script:
+  - |
+    export DOCKER_TAG="${CI_COMMIT_SHA:0:8}"
+    export DOCKER_REPO="$CI_REGISTRY_IMAGE"
+    export DOCKER_IMAGE="${DOCKER_REPO}:${DOCKER_TAG}"
+    export DOCKER_CACHE_IMAGE="${DOCKER_REPO}:$(echo ${CI_COMMIT_REF_NAME} | sed 's/[^a-zA-Z0-9]/-/g')"
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker pull "$DOCKER_CACHE_IMAGE" || docker pull "${DOCKER_REPO}:main" || true
+    - docker pull "$DOCKER_IMAGE" || true
+    - docker build --pull --cache-from "$DOCKER_IMAGE" --cache-from "$DOCKER_CACHE_IMAGE" --cache-from "${DOCKER_REPO}:main" -t "$DOCKER_IMAGE" .
+    - docker push "$DOCKER_IMAGE"
+    - docker tag "$DOCKER_IMAGE" "$DOCKER_CACHE_IMAGE"
+    - docker push "$DOCKER_CACHE_IMAGE"
+
+Deploy:
+  stage: deploy
+  needs: ["Build"]
+  image: docker:stable
+  services:
+    - docker:dind
+  before_script:
+  - |
+    export DOCKER_TAG="${CI_COMMIT_SHA:0:8}"
+    export DOCKER_REPO="$CI_REGISTRY_IMAGE"
+    export DOCKER_IMAGE="${DOCKER_REPO}:${DOCKER_TAG}"
+    export CI_COMMIT_REF_SLUG=$(echo "$CI_COMMIT_REF_NAME" | sed 's/\//-/g')
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker pull $DOCKER_IMAGE
+    - docker stop ${CI_PROJECT_NAME}_${CI_COMMIT_REF_SLUG} || true
+    - docker rm ${CI_PROJECT_NAME}_${CI_COMMIT_REF_SLUG} || true
+    - docker run --name "${CI_PROJECT_NAME}_${CI_COMMIT_REF_SLUG}" -d $DOCKER_IMAGE
+    - echo "The application is available"
+    - echo "Check CI"

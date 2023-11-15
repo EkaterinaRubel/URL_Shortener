@@ -13,6 +13,10 @@ wemake-python-styleguide = "0.18.0"
 pytest = "^7.4.1"
 pytest-cov = "^4.0.0"
 
+fastapi = "^0.103.1"
+uvicorn = "^0.23.2"
+pytest-asyncio = "^0.21.1"
+httpx = "^0.25.1"
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,0 +1,6 @@
+services:
+  base_service:
+    image: base_service:1
+    container_name: base_service_container
+    ports:
+      - "8000:8000"
