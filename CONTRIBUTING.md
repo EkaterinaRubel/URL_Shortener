@@ -11,15 +11,23 @@
     ```
 
 ### Для запуска 
-#### Локально
+- #### Локально
 ```
 python3 src/app/main.py
 ```
-#### B Docker
+- #### B Docker
 ```
 docker compose up
 ```
 проверить отклик `curl http://0.0.0.0:8000/healthz/up`
+- #### B kubernetes (HELM-Chart)
+```
+helm install url-shortener helm/url-shortener/
+```
+uninstall
+```
+helm uninstall url-shortener
+```
 
 ### Тестирование
 ```
@@ -35,11 +43,11 @@ flake8 src
 ```
 
 ### Сборка образов
-#### локально
+- #### Локально
 ```
 docker build -t base_service:1 .
 ```
-#### Для GitLab
+- #### Для GitLab
 ```
 docker build -t registry.gitlab.com/ekaterinar/url_shortener:1 .
 docker push registry.gitlab.com/ekaterinar/url_shortener:1

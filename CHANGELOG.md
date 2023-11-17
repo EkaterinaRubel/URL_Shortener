@@ -7,3 +7,6 @@
 ## task-2: Added basic service
 Добавлен минимальный сервис, содержащий healthz endpoints. 
 CI содержит стадии тестирования, линтинга, сборки и развертывания в Docker.
+
+## task-3: Added Kubernetes, HELM-charts
+Сервис развертывается в K8S с помощью HELM-charts.
