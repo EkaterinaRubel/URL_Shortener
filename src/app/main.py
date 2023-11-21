@@ -9,6 +9,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 from src.app.api.middlewares import collect_metrics, metrics_middleware, tracing_middleware  # noqa: I001, E501
 from src.app.api.technical_router import router as technical_router
+from src.app.api.url_router import router as url_router
 from src.app.config.config_api import HOST, PORT, config
 
 
@@ -28,6 +29,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(technical_router)
+app.include_router(url_router)
 
 metrics_app = make_asgi_app()
 app.mount('/metrics/', metrics_app)
