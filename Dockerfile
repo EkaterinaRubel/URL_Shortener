@@ -21,5 +21,6 @@ RUN curl -sSL https://install.python-poetry.org | python3 - && \
     poetry install
 
 COPY src/app/ ./src/app/
+COPY src/data_base/ ./src/data_base/
 
 ENTRYPOINT ["python3", "src/app/main.py"]
