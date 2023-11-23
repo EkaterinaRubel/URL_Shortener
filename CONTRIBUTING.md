@@ -11,15 +11,40 @@
     ```
 
 ### Для запуска 
+- #### Подготовка для запуска в Docker
+Поднять контейнер с PostgreSQL
+```
+docker compose up postgres
+```
+Выполнить скрипт `tools\preparing_db.sql` для создания БД 
+- #### Подготовка  для запуска в Kubernetes
+```
+helm install postgres helm/postgres/
+```
+создать БД 
+- войти в pod `kubectl exec --stdin --tty NAME_POD -- /bin/bash`
+- подключиться к бд `psql -h localhost -p 5432 -U admin`
+- создать `CREATE DATABASE url_mapping;`
+- создать `CREATE DATABASE url_mapping_test;`
+- удостовериться `SELECT datname FROM pg_database;`
+База должна быть доступна
+```
+kubectl port-forward svc/postgres 5432:5432
+```
+### Запуск 
 - #### Локально
 ```
+export POSTGRES_USER=admin
+export POSTGRES_PASSWORD=password
+export POSTGRES_HOST=localhost
+export POSTGRES_DB_NAME=url_mapping
 python3 src/app/main.py
 ```
 - #### B Docker
 ```
-docker compose up
+docker compose up url_shortener
 ```
-проверить отклик `curl http://0.0.0.0:8000/healthz/up`
+проверить отклик `curl http://localhost:8000/healthz/up`
 - #### B kubernetes (HELM-Chart)
 ```
 helm install url-shortener helm/url-shortener/
@@ -45,7 +70,7 @@ flake8 src
 ### Сборка образов
 - #### Локально
 ```
-docker build -t base_service:1 .
+docker build -t url_shortener:1 .
 ```
 - #### Для GitLab
 ```
