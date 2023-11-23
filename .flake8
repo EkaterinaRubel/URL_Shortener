@@ -1,5 +1,5 @@
 [flake8]
-ignore = WPS305, WPS432, S101, I005
+ignore = WPS305, WPS432, S101, I005, WPS609
 exclude = 
     */__init__.py
 

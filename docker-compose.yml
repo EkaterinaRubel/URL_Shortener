@@ -1,6 +1,21 @@
 services:
-  base_service:
-    image: base_service:1
-    container_name: base_service_container
+  url_shortener:
+    image: url_shortener:1
+    container_name: url_shortener_container
     ports:
       - "8000:8000"
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=admin
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB_NAME=url_mapping_test
+
+  postgres:
+    image: postgres:15.4
+    container_name: pg_conteiner
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=admin
+      - POSTGRES_DB_NAME=url_mapping_test

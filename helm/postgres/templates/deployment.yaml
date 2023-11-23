@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "url-shortener.fullname" . }}
+  name: {{ include "postgres.fullname" . }}
   labels:
-    {{- include "url-shortener.labels" . | nindent 4 }}
+    {{- include "postgres.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "url-shortener.selectorLabels" . | nindent 6 }}
+      {{- include "postgres.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "url-shortener.labels" . | nindent 8 }}
+        {{- include "postgres.labels" . | nindent 8 }}
 	{{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -40,23 +40,25 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          
           livenessProbe:
-            httpGet:
-              path: {{ .Values.app.probes.livenessPath }}
-              port: {{ .Values.service.port }}
-            initialDelaySeconds: {{ .Values.app.probes.initialDelaySeconds }}
-          readinessProbe:
-            httpGet:
-              path: {{ .Values.app.probes.readinessPath }}
-              port: {{ .Values.service.port }}
-            initialDelaySeconds: {{ .Values.app.probes.initialDelaySeconds }}
+            exec:
+              command:
+              - sh
+              - -c
+              - pg_isready -U $POSTGRES_USER
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 5
+
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}
             - secretRef:
                 name: {{ .Release.Name }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}

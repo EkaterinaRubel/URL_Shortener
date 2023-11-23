@@ -11,6 +11,7 @@ from src.app.api.middlewares import collect_metrics, metrics_middleware, tracing
 from src.app.api.technical_router import router as technical_router
 from src.app.api.url_router import router as url_router
 from src.app.config.config_api import HOST, PORT, config
+from src.data_base.connections.connections import db_manager
 
 
 @asynccontextmanager
@@ -24,8 +25,10 @@ async def lifespan(app: FastAPI):
     Yields:
         jaeger_tracer
     """
+    await db_manager.create_pool()
     tracer = config.initialize_tracer()
     yield {'jaeger_tracer': tracer}
+    await db_manager.close_pool()
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(technical_router)
