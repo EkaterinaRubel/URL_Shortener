@@ -88,3 +88,17 @@ curl -k http://0.0.0.0:8000/openapi.json > swagger/openapi.json
 Открыть в удобочитаемом виде можно на сайте [Swagger UI](https://editor.swagger.io/)
 `File -> Clear Editor -> вставить json из swagger/openapi.json`
 При необходимости преобразовать в yaml - согласиться.
+
+## Управление миграциями
+При инициализации миграций использовался шаблоня`async` 
+```
+alembic init -t async
+```
+Генерация новой миграции
+```
+alembic revision --autogenerate -m 'nametable__definition'
+```
+Применение миграций
+```
+alembic upgrade head
+```
