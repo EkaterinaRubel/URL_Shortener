@@ -5,5 +5,5 @@ metadata:
   labels:
     {{- include "url-shortener.labels" . | nindent 4 }}
 data:
-  POSTGRES_DB_NAME: url_mapping
+  POSTGRES_DB_NAME: url_mapping_test
   POSTGRES_HOST: postgres

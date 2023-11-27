@@ -55,7 +55,12 @@ helm uninstall url-shortener
 ```
 
 ### Тестирование
+- #### B Docker и  Kubernetes
+Приложение уже поднимается в тестовом режиме, если нужно иное - убрать постфикс `_test` из переменной `POSTGRES_DB_NAME`.
+- #### Локально
+Использовать тестовую базу данных 
 ```
+export POSTGRES_DB_NAME=url_mapping_test
 pytest src/tests -v
 ```
 #### Для определения тестового покрытия 
