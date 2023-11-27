@@ -14,6 +14,14 @@ class DBManager(object):
     а также для получения и освобождения соединений из пула.
     """
 
+    _instance = None
+
+    def __new__(cls):
+        """Паттерн Singleton."""  # noqa: DAR201
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
     async def create_pool(self):
         """Создает пул соединений с базой данных."""
         self.pool = await asyncpg.create_pool(

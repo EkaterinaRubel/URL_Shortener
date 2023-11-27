@@ -33,7 +33,8 @@ Tests:
   - export POSTGRES_PASSWORD=password
   - export POSTGRES_HOST=localhost
   - export POSTGRES_DB_NAME=url_mapping
-  - pytest src/tests -v -k "not test_health_check_ready_integration"
+  - pytest src/tests/unit -v
+  - pytest src/tests/integration/app/test_technical_router.py -v -k "not test_health_check_ready_integration"
   rules:
   - changes:
     - "src/**/*"

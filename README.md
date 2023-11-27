@@ -1,6 +1,8 @@
 ## Base service
 Cервис для сокращения URL, написанный на FastAPI.
-Данные хранятся в памяти сервиса.
+Данные хранятся в PostgreSQL.
+Автотесты выполнены на pytest, (с примерением unittest.mock, fixture, параметризации). 
+Тестовое покрытие 96%.
 Для управления миграциями базы данных используется Alembic. 
 Настроен gitlab-ci, содержащий стадии линтинга, тестирования и сборки.
 Развертывается в Kubernetes с помошью Helm-чарта.
@@ -8,11 +10,15 @@ Cервис для сокращения URL, написанный на FastAPI.
 
 ### Технологии
 - FastAPI 0.103.1
+- PostgreSQL
 - Poetry 1.5.1
 - Docker, Docker-compose
 - Kubernetes, HELM
 - CI/CD (linter, testing, build)
-- pytest / pytest-cov
+- pytest (моки, параметризация, фикстуры) / pytest-cov
 - Prometheus
 - Jaeger Tracing
 - alembic
+
+### Инструкции по развертыванию
+[Contributing Guidelines](CONTRIBUTING.md)
