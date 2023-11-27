@@ -1,4 +1,4 @@
-## Base service
+## URL Shortener
 Cервис для сокращения URL, написанный на FastAPI.
 Данные хранятся в PostgreSQL.
 Автотесты выполнены на pytest, (с примерением unittest.mock, fixture, параметризации). 
@@ -18,6 +18,7 @@ Cервис для сокращения URL, написанный на FastAPI.
 - pytest (моки, параметризация, фикстуры) / pytest-cov
 - Prometheus
 - Jaeger Tracing
+- Grafana
 - alembic
 
 ### Инструкции по развертыванию
