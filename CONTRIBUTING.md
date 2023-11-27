@@ -94,7 +94,7 @@ curl -k http://0.0.0.0:8000/openapi.json > swagger/openapi.json
 `File -> Clear Editor -> вставить json из swagger/openapi.json`
 При необходимости преобразовать в yaml - согласиться.
 
-## Управление миграциями
+### Управление миграциями
 При инициализации миграций использовался шаблоня`async` 
 ```
 alembic init -t async
@@ -107,3 +107,12 @@ alembic revision --autogenerate -m 'nametable__definition'
 ```
 alembic upgrade head
 ```
+
+### Иммитация запросов клиента для сбора метрик
+Развернуть сервис в kubernetes. Приложение должно быть доступно.
+```
+kubectl port-forward svc/url-shortener 8000:8000
+```
+Выполнить необходимые запросы из файла `src/client_imitation/client_imitation.py`
+Выполнить настройку или импортировать Dashboard в Grafana
+![Dashboard in Grafana](tools/client_imitation/Grafana.png)
